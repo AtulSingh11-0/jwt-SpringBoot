@@ -1,8 +1,8 @@
 package com.example.jwt.auth.Controller;
 
-import com.example.jwt.auth.AuthenticationResponse;
-import com.example.jwt.auth.AuthenticationRequest;
-import com.example.jwt.auth.RegisterRequest;
+import com.example.jwt.auth.Response.AuthenticationResponse;
+import com.example.jwt.auth.Request.AuthenticationRequest;
+import com.example.jwt.auth.Request.RegisterRequest;
 import com.example.jwt.auth.Service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
