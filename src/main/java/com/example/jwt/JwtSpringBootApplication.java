@@ -8,6 +8,7 @@ public class JwtSpringBootApplication {
 
   public static void main ( String[] args ) {
     SpringApplication.run(JwtSpringBootApplication.class, args);
+    System.out.println("Hello jwt!");
   }
 
 }
