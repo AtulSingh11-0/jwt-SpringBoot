@@ -38,7 +38,7 @@ public class AuthenticationService {
     user.setName(request.getName());
     user.setEmail(request.getEmail());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
-    user.setRole(Role.USER);
+    user.setRole(Role.ADMIN);
 
     userRepository.save(user);
 
@@ -67,10 +67,9 @@ public class AuthenticationService {
 
 //  method to return an authentication response object containing the jwt token
   private AuthenticationResponse response ( User user ) {
-    var jwt = jwtService.generateToken(user);
     return AuthenticationResponse
         .builder()
-        .jwt(jwt)
+        .jwt(jwtService.generateToken(user))
         .build();
   }
 

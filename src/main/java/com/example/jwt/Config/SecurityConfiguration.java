@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,13 +28,14 @@ public class SecurityConfiguration {
 
     httpSecurity
         .csrf(
-            AbstractHttpConfigurer::disable
+            csrf -> csrf
+                .disable()
         )
         .authorizeHttpRequests(
             auth -> auth
                 .requestMatchers("/api/v1/auth/**") // permit all for auth endpoints
                 .permitAll()
-                .requestMatchers("/api/v1/unsecured/**") // permit all for unsecured endpoints
+                .requestMatchers("/megatronix/**") // permit all for unsecured endpoints
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -46,6 +46,5 @@ public class SecurityConfiguration {
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     return httpSecurity.build();
-
   }
 }
