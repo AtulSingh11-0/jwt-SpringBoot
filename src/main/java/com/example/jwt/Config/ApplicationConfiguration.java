@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfiguration {
 
   @Autowired
-  private final UserRepository userRepository;
+  private UserRepository userRepository;
 
 //  This method is used to load the user from the database
   @Bean

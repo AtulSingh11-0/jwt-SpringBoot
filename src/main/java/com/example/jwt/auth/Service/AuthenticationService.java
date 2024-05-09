@@ -1,12 +1,12 @@
 package com.example.jwt.auth.Service;
 
-import com.example.jwt.Model.Role;
+import com.example.jwt.Model.Admin;
 import com.example.jwt.Model.User;
+import com.example.jwt.Repository.AdminRepository;
 import com.example.jwt.Repository.UserRepository;
 import com.example.jwt.Security.JwtService;
 import com.example.jwt.auth.Response.AuthenticationResponse;
 import com.example.jwt.auth.Request.AuthenticationRequest;
-import com.example.jwt.auth.Request.RegisterRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -21,34 +22,47 @@ import java.util.concurrent.CompletableFuture;
 public class AuthenticationService {
 
   @Autowired
-  private final UserRepository userRepository;
-
+  private UserRepository userRepository;
   @Autowired
-  private final PasswordEncoder passwordEncoder;
-
+  private PasswordEncoder passwordEncoder;
   @Autowired
-  private final JwtService jwtService;
-
+  private JwtService jwtService;
   @Autowired
-  private final AuthenticationManager authenticationManager;
+  private AuthenticationManager authenticationManager;
+  @Autowired
+  private AdminRepository adminRepository;
 
-//  register the user and return the jwt token
-  public CompletableFuture< AuthenticationResponse > register ( RegisterRequest request ) {
-    User user = new User();
-    user.setName(request.getName());
-    user.setEmail(request.getEmail());
-    user.setPassword(passwordEncoder.encode(request.getPassword()));
-    user.setRole(Role.ADMIN);
+  //  register the user and return the jwt token
+  public CompletableFuture< AuthenticationResponse > register ( User request ) {
+    if( request.isEmailVerified()) {
+      Optional< Admin > admin = adminRepository.findByUsername(request.getEmail());
+      if( admin.isPresent()) {
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if( userOptional.isPresent()) {
+          throw new RuntimeException("Email already exists");
+        }
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("ADMIN");
+        user.setEmailVerified(true);
 
-    userRepository.save(user);
+        userRepository.save(user);
 
-    return CompletableFuture.completedFuture(
-        response(user)
-    );
+        return CompletableFuture.completedFuture(
+            response(user)
+        );
+      } else {
+        throw new RuntimeException("Admin not found");
+      }
+    } else {
+      throw new RuntimeException("Email not verified");
+    }
   }
 
 //  authenticate the user and return the jwt token
-  public CompletableFuture< AuthenticationResponse > authenticate ( AuthenticationRequest request ) {
+  public CompletableFuture< AuthenticationResponse > authenticate ( User request ) {
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             request.getEmail(),

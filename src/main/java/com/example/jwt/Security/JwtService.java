@@ -18,11 +18,6 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-//  load the environment variables
-  static Dotenv dotenv = Dotenv.load();
-//  get the secret key from the environment variable
-  private static final String SECRET_KEY = dotenv.get("SECRET_KEY");
-
 //  extract the username from the token
   public String extractUsername ( String token ) {
     return extractClaim(token, Claims::getSubject);
@@ -80,6 +75,7 @@ public class JwtService {
 
 //  get the secret key
   private SecretKey getSecretKey () {
+    String SECRET_KEY = "b3a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2\n";
     byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
     return Keys.hmacShaKeyFor(keyBytes);
   }

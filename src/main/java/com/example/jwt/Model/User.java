@@ -23,12 +23,12 @@ public class User implements UserDetails {
   private String name;
   private String email;
   private String password;
-  @Enumerated(EnumType.STRING)
-  private Role role;
+  private String role="ADMIN";
+  private boolean emailVerified;
 
   @Override
   public Collection< ? extends GrantedAuthority > getAuthorities () {
-    return List.of (new SimpleGrantedAuthority(role.name()));
+    return List.of (new SimpleGrantedAuthority(role));
   }
 
   @Override

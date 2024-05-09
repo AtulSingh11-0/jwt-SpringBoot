@@ -1,8 +1,8 @@
 package com.example.jwt.auth.Controller;
 
+import com.example.jwt.Model.User;
 import com.example.jwt.auth.Response.AuthenticationResponse;
 import com.example.jwt.auth.Request.AuthenticationRequest;
-import com.example.jwt.auth.Request.RegisterRequest;
 import com.example.jwt.auth.Service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +23,41 @@ public class AuthenticationController {
 //  register the user
   @PostMapping("/register")
   public CompletableFuture< ResponseEntity< AuthenticationResponse > > register (
-      @RequestBody RegisterRequest request
+      @RequestBody User request
   ) {
     return authenticationService
         .register(request)
-        .thenApply(ResponseEntity::ok)
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+        .thenApply(s -> {
+          if ( s != null ) {
+            return ResponseEntity.ok(s);
+          } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
+          }
+        })
+        .exceptionally(ex -> {
+//          System.out.println(ex.getMessage();
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        });
   }
 
 //  authenticate the user, basically login route
   @PostMapping("/authenticate")
-  public CompletableFuture< ResponseEntity< AuthenticationResponse > > register (
-      @RequestBody AuthenticationRequest request
+  public CompletableFuture< ResponseEntity< AuthenticationResponse > > login (
+      @RequestBody User request
   ) {
     return authenticationService
         .authenticate(request)
-        .thenApply(ResponseEntity::ok)
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        .thenApply(s -> {
+          if ( s != null ) {
+            return ResponseEntity.ok(s);
+          } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
+          }
+        })
+        .exceptionally(ex -> {
+//          System.out.println(ex.getMessage();
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        });
   }
 
 }

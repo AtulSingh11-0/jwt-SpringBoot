@@ -21,10 +21,10 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
   @Autowired
-  private final JwtService jwtService;
+  private JwtService jwtService;
 
   @Autowired
-  private final UserDetailsService userDetailsService;
+  private UserDetailsService userDetailsService;
 
   @Override
   protected void doFilterInternal (
