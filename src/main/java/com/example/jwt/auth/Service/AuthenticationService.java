@@ -6,7 +6,6 @@ import com.example.jwt.Repository.AdminRepository;
 import com.example.jwt.Repository.UserRepository;
 import com.example.jwt.Security.JwtService;
 import com.example.jwt.auth.Response.AuthenticationResponse;
-import com.example.jwt.auth.Request.AuthenticationRequest;
 import com.example.jwt.exception.AdminNotFoundException;
 import com.example.jwt.exception.EmailAlreadyExistsException;
 import com.example.jwt.exception.EmailNotVerifiedException;

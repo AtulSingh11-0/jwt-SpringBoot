@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 public class AuthenticationController {
 
   @Autowired
-  private final AuthenticationService authenticationService;
+  private AuthenticationService authenticationService;
 
 //  register the user
 @PostMapping("/register")

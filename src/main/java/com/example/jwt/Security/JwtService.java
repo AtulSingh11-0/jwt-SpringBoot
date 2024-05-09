@@ -1,7 +1,6 @@
 package com.example.jwt.Security;
 
 import com.example.jwt.Config.AppConstants;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -75,7 +74,7 @@ public class JwtService {
 
 //  get the secret key
   private SecretKey getSecretKey () {
-    String SECRET_KEY = "b3a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2\n";
+    String SECRET_KEY = "b3a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2a6f7d2e5918c4b7a8d96e2f5c0b3e2";
     byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
     return Keys.hmacShaKeyFor(keyBytes);
   }
