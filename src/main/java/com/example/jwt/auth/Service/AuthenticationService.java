@@ -7,10 +7,14 @@ import com.example.jwt.Repository.UserRepository;
 import com.example.jwt.Security.JwtService;
 import com.example.jwt.auth.Response.AuthenticationResponse;
 import com.example.jwt.auth.Request.AuthenticationRequest;
+import com.example.jwt.exception.AdminNotFoundException;
+import com.example.jwt.exception.EmailAlreadyExistsException;
+import com.example.jwt.exception.EmailNotVerifiedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +43,7 @@ public class AuthenticationService {
       if( admin.isPresent()) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
         if( userOptional.isPresent()) {
-          throw new RuntimeException("Email already exists");
+          throw new EmailAlreadyExistsException("Email already exists");
         }
         User user = new User();
         user.setName(request.getName());
@@ -54,10 +58,10 @@ public class AuthenticationService {
             response(user)
         );
       } else {
-        throw new RuntimeException("Admin not found");
+        throw new AdminNotFoundException("Admin not found");
       }
     } else {
-      throw new RuntimeException("Email not verified");
+      throw new EmailNotVerifiedException("Email not verified");
     }
   }
 
@@ -72,7 +76,7 @@ public class AuthenticationService {
 
     User user = userRepository
         .findByEmail(request.getEmail())
-        .orElseThrow( () -> new RuntimeException("User not found"));
+        .orElseThrow( () -> new UsernameNotFoundException("Admin not found"));
 
     return CompletableFuture.completedFuture(
         response(user)

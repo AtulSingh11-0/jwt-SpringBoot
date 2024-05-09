@@ -2,8 +2,11 @@ package com.example.jwt.auth.Controller;
 
 import com.example.jwt.Model.User;
 import com.example.jwt.auth.Response.AuthenticationResponse;
-import com.example.jwt.auth.Request.AuthenticationRequest;
 import com.example.jwt.auth.Service.AuthenticationService;
+import com.example.jwt.exception.AdminNotFoundException;
+import com.example.jwt.exception.EmailAlreadyExistsException;
+import com.example.jwt.exception.EmailNotVerifiedException;
+import com.example.jwt.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,42 +24,27 @@ public class AuthenticationController {
   private final AuthenticationService authenticationService;
 
 //  register the user
-  @PostMapping("/register")
-  public CompletableFuture< ResponseEntity< AuthenticationResponse > > register (
-      @RequestBody User request
-  ) {
-    return authenticationService
-        .register(request)
-        .thenApply(s -> {
-          if ( s != null ) {
-            return ResponseEntity.ok(s);
-          } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
-          }
-        })
-        .exceptionally(ex -> {
-//          System.out.println(ex.getMessage();
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        });
-  }
+@PostMapping("/register")
+public CompletableFuture<ResponseEntity<AuthenticationResponse>> register(
+    @RequestBody User request) {
+  return authenticationService.register(request)
+      .thenApply(ResponseEntity::ok)
+      .exceptionally(ex -> {
+        Throwable cause = ex.getCause();
+        String errorMessage = cause != null ? cause.getMessage() : "Unknown error occurred";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthenticationResponse(errorMessage));
+      });
+}
 
-//  authenticate the user, basically login route
   @PostMapping("/authenticate")
-  public CompletableFuture< ResponseEntity< AuthenticationResponse > > login (
-      @RequestBody User request
-  ) {
-    return authenticationService
-        .authenticate(request)
-        .thenApply(s -> {
-          if ( s != null ) {
-            return ResponseEntity.ok(s);
-          } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(s);
-          }
-        })
+  public CompletableFuture<ResponseEntity<AuthenticationResponse>> login(
+      @RequestBody User request) {
+    return authenticationService.authenticate(request)
+        .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> {
-//          System.out.println(ex.getMessage();
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+          Throwable cause = ex.getCause();
+          String errorMessage = cause != null ? cause.getMessage() : "Unknown error occurred";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthenticationResponse(errorMessage));
         });
   }
 
